@@ -21,7 +21,7 @@ Before you begin, ensure you have:
 
 1. Clone the repository:
 ```bash
-git clone [<repository-url>](https://github.com/vualidon/paperpulse.git)
+git clone https://github.com/vualidon/paperpulse.git
 cd paperpulse
 ```
 
