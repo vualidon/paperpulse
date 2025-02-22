@@ -147,9 +147,8 @@ export async function* streamInitialPaperReview(paper: { title: string; abstract
    - Highlight potential real-world applications
 
 3. SUGGESTED QUESTIONS:
-   - Provide exactly 3 thought-provoking questions about the paper
-   - Questions should cover different aspects (methodology, results, implications)
-   - Each question should be self-contained and clear
+   - Provide exactly 3 thought questions about the paper that could guide further discussion or research
+   - The question must be can be answered based on the paper content
 
 Format your response EXACTLY like this:
 SUMMARY: [Your comprehensive summary here]
