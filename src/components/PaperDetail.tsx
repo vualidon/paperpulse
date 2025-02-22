@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Dialog, Tab } from '@headlessui/react';
 import { format } from 'date-fns';
 import { Paper } from '../types/paper';
 import { BookmarkIcon as BookmarkOutline } from '@heroicons/react/24/outline';
 import { BookmarkIcon as BookmarkSolid } from '@heroicons/react/24/solid';
-import { XMarkIcon, ArrowTopRightOnSquareIcon, ChatBubbleLeftRightIcon, DocumentTextIcon, DocumentIcon, GlobeAltIcon, DocumentTextIcon as AbstractIcon, PencilSquareIcon } from '@heroicons/react/24/outline';
+import { XMarkIcon, ChatBubbleLeftRightIcon, DocumentIcon, GlobeAltIcon, DocumentTextIcon as AbstractIcon, PencilSquareIcon } from '@heroicons/react/24/outline';
 import ReactMarkdown from 'react-markdown';
 import Discussion from './Discussion';
 import { generateObsidianNote } from '../lib/ai';

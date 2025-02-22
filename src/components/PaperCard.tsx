@@ -1,4 +1,3 @@
-import React from 'react';
 import { format, formatDistanceToNow } from 'date-fns';
 import { Paper } from '../types/paper';
 import { BookmarkIcon as BookmarkOutline } from '@heroicons/react/24/outline';

@@ -1,5 +1,10 @@
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import { GoogleGenerativeAI, GenerativeModel } from "@google/generative-ai";
 
+interface StreamResponse {
+  stream: AsyncGenerator<{ text: () => string }>;
+}
+
+// Add Vite's ImportMeta interface augmentation
 // Initialize the AI model with proper error handling
 const API_KEY = import.meta.env.VITE_GOOGLE_API_KEY;
 
@@ -10,7 +15,7 @@ const isValidApiKey = (key: string | undefined): boolean => {
 
 // Initialize the AI client with error handling
 let genAI: GoogleGenerativeAI;
-let model: any;
+let model: GenerativeModel;
 
 try {
   if (!isValidApiKey(API_KEY)) {
@@ -53,7 +58,7 @@ async function retry<T>(
   }
 }
 
-export async function* generateObsidianNote(paper: { 
+export async function* generateObsidianNote(paper: {
   id: string;
   title: string;
   abstract: string;
@@ -66,7 +71,11 @@ export async function* generateObsidianNote(paper: {
   }
 
   try {
-    const prompt = `Create a comprehensive research note for Obsidian about this academic paper. The note should follow this exact template:
+    const prompt = `Create a comprehensive research note for Obsidian about this academic paper.
+Here's the paper abstract to analyze:
+${paper.abstract}
+
+The note must follow this exact template:
 
 ---
 id: ${paper.id}
@@ -93,8 +102,7 @@ Use bullet points for better readability]
 - [View Paper](https://arxiv.org/abs/${paper.id})
 - [PDF](https://arxiv.org/pdf/${paper.id}.pdf)
 
-Here's the paper abstract to analyze:
-${paper.abstract}
+
 
 Important:
 1. Keep the exact template format
@@ -103,8 +111,8 @@ Important:
 4. Include practical applications
 5. Maintain academic tone`;
 
-    const result = await retry(() => model.generateContentStream(prompt));
-    
+    const result = await retry(() => model.generateContentStream(prompt)) as StreamResponse;
+
     for await (const chunk of result.stream) {
       try {
         yield chunk.text();
@@ -155,35 +163,35 @@ Here's the paper:
 Title: ${paper.title}
 Abstract: ${paper.abstract}`;
 
-    const result = await retry(() => model.generateContentStream(prompt));
+    const result = await retry(() => model.generateContentStream(prompt)) as StreamResponse;
     let fullResponse = '';
-    
+
     for await (const chunk of result.stream) {
       try {
         const chunkText = chunk.text();
         fullResponse += chunkText;
-        
+
         // Try to parse the current accumulated response
         const summaryMatch = fullResponse.match(/SUMMARY:\s*([\s\S]*?)(?=NOVELTY:|$)/);
         const noveltyMatch = fullResponse.match(/NOVELTY:\s*([\s\S]*?)(?=QUESTIONS:|$)/);
         const questionsMatch = fullResponse.match(/QUESTIONS:\s*([\s\S]*?)(?=$)/);
 
         const partialReview: Partial<PaperReview> = {};
-        
+
         if (summaryMatch) {
           partialReview.summary = summaryMatch[1].trim();
         }
-        
+
         if (noveltyMatch) {
           partialReview.novelty = noveltyMatch[1].trim();
         }
-        
+
         if (questionsMatch) {
           const questions = questionsMatch[1]
             .split(/\d+\.\s+/)
             .filter(q => q.trim().length > 0)
             .map(q => q.trim());
-          
+
           if (questions.length > 0) {
             partialReview.suggestedQuestions = questions;
           }
@@ -252,8 +260,8 @@ If you cannot answer based on the paper's content, respond with:
 
 "I apologize, but I cannot find sufficient information in the provided paper content to answer this question accurately. The paper's abstract does not contain details about [topic]."`;
 
-    const result = await retry(() => model.generateContentStream(systemPrompt));
-    
+    const result = await retry(() => model.generateContentStream(systemPrompt)) as StreamResponse;
+
     for await (const chunk of result.stream) {
       try {
         yield chunk.text();

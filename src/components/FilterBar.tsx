@@ -1,4 +1,3 @@
-import React from 'react';
 import { FunnelIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 
 interface FilterBarProps {

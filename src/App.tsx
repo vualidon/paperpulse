@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { SunIcon, MoonIcon } from '@heroicons/react/24/outline';
 import PaperList from './components/PaperList';
